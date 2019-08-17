@@ -1,0 +1,30 @@
+language: minimal
+matrix:
+  include:
+  - env: ARCH=windows
+  - env: ARCH=macos
+  - env: ARCH=linux_x86_64
+addons:
+  apt:
+    packages:
+    - unzip
+    - zip
+install: skip
+script: ./build.sh
+deploy:
+  provider: releases
+  api_key:
+    secure: XQT7uml8NgeV21l8fjJkcRxN+MjN1RZoI3uoLd+c9dKqLT3KPRx2qsVkq2PyuWnMLGJfnYEeguocq7nDPKYLbXEhG9Q5t+C7pKDKFwwhKkIvjBESN6e1qzVrRfKgCyQltO1F4+xQ39ks8sxAWl2oGF5ag9JoG0HN3SCKsFvQtWb05DYU3ijIGyUdDsx2IMZZW6N2RguF4iiFzgzP062YDiz1e0rJ9JcOWRkmt6D/2srur2pay5xl9+x8F8QjWdBwk4O/JldavRo0PQhT0osvr8MDqdG9Ad+/9116OWeOO4a0kIj1RwIhcRmgvbjTX2HAU5UW9IPP4IgZp2fT5TQ4Wc6c3ov7UU0o/hXRJJBO52EbnAcqlucnKPggYfun8svvqD6efsj3wHCLr0SaGYeZ0bmehn+b5iHudHM9XNslRxqEiKwaAGpJy9Uk9ncLqNnspel288CGh9zJfXDcWH4uHlA6Dy/NU3WQ9rHifUBIScobJVVdgEfaYctPKN7kLS7SYFUr/E2EPRiBCB5DuuGngjiie73KoU6O9kyFWvpfdjV4g9BnG2MmRd2k1CBU6Qx0H1e9teWqvkLAYvibiA0VcJuhlaC14PDJgWTgIOVJG4i36DBUilvLX2bBwqnBQ+E+j3WY8Mh8kw4zNmGAzjn5jPRHSXWpfhlktYbGHOeC0K0=
+  file:
+    - output/*.tar.gz
+    - output/*.zip
+  file_glob: true
+  skip_cleanup: true
+  on:
+    repo: im-fomu/fomu-toolchain
+    all_branches: true
+    tags: true
+branches:
+  only:
+    # Release tags
+    - /^v\d+\.\d+/

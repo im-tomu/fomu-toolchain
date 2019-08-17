@@ -4,7 +4,7 @@ Fomu is an FPGA in your USB port.  This repository contains prebuilt versions of
 
 ## Usage
 
-Download the [latest release](https://github.com/im-fomu/fomu-toolchain/releases/latest) for your platform and extract it somewhere on your disk.  Then set your PATH:
+Download the [latest release](https://github.com/im-tomu/fomu-toolchain/releases/latest) for your platform and extract it somewhere on your disk.  Then set your PATH:
 
 * MacOS: `export PATH=[path-to-bin]:$PATH`
 * Linux: `export PATH=[path-to-bin]:$PATH`

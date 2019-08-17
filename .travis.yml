@@ -21,7 +21,7 @@ deploy:
   file_glob: true
   skip_cleanup: true
   on:
-    repo: im-fomu/fomu-toolchain
+    repo: im-tomu/fomu-toolchain
     all_branches: true
     tags: true
 branches:

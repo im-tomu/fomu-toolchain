@@ -1,5 +1,4 @@
 #!/bin/sh -x
-set -e
 
 win_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.34-fomu/nextpnr-ice40-windows_amd64-v1.34-fomu.zip"
 win_icestorm_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.26-fomu/toolchain-icestorm-windows_amd64-v1.26-fomu.zip"

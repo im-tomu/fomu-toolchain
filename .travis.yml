@@ -18,6 +18,9 @@ deploy:
   file:
     - output/*.tar.gz
     - output/*.zip
+    - output/*.sha1
+    - output/*.sha256
+    - output/*.sha512
   file_glob: true
   skip_cleanup: true
   on:

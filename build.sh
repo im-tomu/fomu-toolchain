@@ -23,11 +23,26 @@ base="$(pwd)"
 output_name="fomu-toolchain-${ARCH}-${TRAVIS_TAG}"
 output="${base}/output/${output_name}"
 input="${base}/input"
+
 mkdir -p $output
 mkdir -p $input
 mkdir -p $output/bin
 
 echo "${TRAVIS_TAG}" > $output/VERSION
+
+checksum_output() {
+    set +x
+    hashes="sha1 sha256 sha512"
+    local outfile hashfile
+    outfile=$output$1
+
+    for hash in $hashes ; do
+	hashfile=$outfile.$hash
+        ${hash}sum $outfile > $hashfile
+	echo -n "$hash: " ; cat $hashfile
+    done
+    set -x
+}
 
 case "${ARCH}" in
     "windows")
@@ -76,6 +91,7 @@ case "${ARCH}" in
 
         cd $base/output
         zip -r $output_name.zip $output_name
+        checksum_output .zip
         ;;
 
     "macos")
@@ -108,6 +124,7 @@ case "${ARCH}" in
 
         cd $base/output
         zip -r $output_name.zip $output_name
+        checksum_output .zip
         ;;
 
     "linux_x86_64")
@@ -140,6 +157,7 @@ case "${ARCH}" in
 
         cd $base/output
         tar cvzf $output_name.tar.gz $output_name
+        checksum_output .tar.gz
         ;;
     *)
         echo "Unrecognized architecture: ${ARCH}"

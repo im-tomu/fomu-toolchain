@@ -9,7 +9,7 @@ Download the [latest release](https://github.com/im-tomu/fomu-toolchain/releases
 * MacOS: `export PATH=[path-to-bin]:$PATH`
 * Linux: `export PATH=[path-to-bin]:$PATH`
 * Windows Powershell: `$ENV:PATH = "[path-to-bin];" + $ENV:PATH`
-* Windows cmd.exe: `PATH=[path-to-bin];%PATH`
+* Windows cmd.exe: `PATH=[path-to-bin];%PATH%`
 
 To confirm installation, run a command such as `nextpnr-ice40` or `yosys`.
 

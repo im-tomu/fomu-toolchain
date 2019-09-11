@@ -30,6 +30,14 @@ mkdir -p $output/bin
 
 echo "${TRAVIS_TAG}" > $output/VERSION
 
+if [ -z ${TRAVIS_TAG} ]
+then
+    echo "This repository is designed to be run in the Travis CI system."
+    echo "Please download the prebuilt distribution for your platform at:"
+    echo "https://github.com/im-tomu/fomu-toolchain/releases/latest"
+    exit 1
+fi
+
 checksum_output() {
     set +x
     hashes="sha1 sha256 sha512"

@@ -51,6 +51,7 @@ case "${ARCH}" in
         cd $output/bin
         unzip -o $input/python-${ARCH}.zip
         rm python37.zip # we already have this unzipped from nextpnr-ice40
+        rm -f python37._pth # If this file is present, PYTHONPATH is very broken
 
         # Nextpnr
         wget -O $input/nextpnr-${ARCH}.zip $win_nextpnr_url

@@ -1,23 +1,23 @@
 #!/bin/sh -x
 set -e
 
-win_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.37-fomu/nextpnr-ice40-windows_amd64-v1.37-fomu.zip"
-win_icestorm_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.31-fomu/toolchain-icestorm-windows_amd64-v1.31-fomu.zip"
-win_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.3.2/wishbone-tool-v0.3.2-x86_64-pc-windows-gnu.tar.gz"
-win_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-w64-mingw32.zip"
+win_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.4-fomu/nextpnr-ice40-windows_amd64-v1.4-fomu.zip"
+win_yosys_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.38-fomu/toolchain-icestorm-windows_amd64-v1.38-fomu.zip"
+win_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.4.7/wishbone-tool-v0.4.7-x86_64-pc-windows-gnu.tar.gz"
+win_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-w64-mingw32.zip"
 win_python_url="https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip"
 win_make_url="https://sourceforge.net/projects/ezwinports/files/make-4.2.1-without-guile-w32-bin.zip/download"
 win_teraterm_url="https://osdn.net/frs/redir.php?m=constant&f=ttssh2%2F71232%2Fteraterm-4.103.zip"
 
-mac_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.37-fomu/nextpnr-ice40-darwin-v1.37-fomu.tar.gz"
-mac_icestorm_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.31-fomu/toolchain-icestorm-darwin-v1.31-fomu.tar.gz"
-mac_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.3.2/wishbone-tool-v0.3.2-x86_64-apple-darwin.tar.gz"
-mac_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-apple-darwin.tar.gz"
+mac_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.4-fomu/nextpnr-ice40-darwin-v1.4-fomu.tar.gz"
+mac_yosys_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.38-fomu/toolchain-icestorm-darwin-v1.38-fomu.tar.gz"
+mac_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.4.7/wishbone-tool-v0.4.7-x86_64-apple-darwin.tar.gz"
+mac_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-apple-darwin.tar.gz"
 
-linux_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.37-fomu/nextpnr-ice40-linux_x86_64-v1.37-fomu.tar.gz"
-linux_icestorm_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.31-fomu/toolchain-icestorm-linux_x86_64-v1.31-fomu.tar.gz"
-linux_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.3.2/wishbone-tool-v0.3.2-x86_64-unknown-linux-gnu.tar.gz"
-linux_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-centos6.tar.gz"
+linux_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.4-fomu/nextpnr-ice40-linux_x86_64-v1.4-fomu.tar.gz"
+linux_yosys_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.38-fomu/toolchain-icestorm-linux_x86_64-v1.38-fomu.tar.gz"
+linux_wishbone_tool_url="https://github.com/xobs/wishbone-utils/releases/download/v0.4.7/wishbone-tool-v0.4.7-x86_64-unknown-linux-gnu.tar.gz"
+linux_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-centos6.tar.gz"
 
 base="$(pwd)"
 output_name="fomu-toolchain-${ARCH}-${TRAVIS_TAG}"
@@ -27,8 +27,6 @@ input="${base}/input"
 mkdir -p $output
 mkdir -p $input
 mkdir -p $output/bin
-
-echo "${TRAVIS_TAG}" > $output/VERSION
 
 if [ -z ${TRAVIS_TAG} ]
 then
@@ -67,9 +65,9 @@ case "${ARCH}" in
         unzip -o $input/nextpnr-${ARCH}.zip
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/icestorm-${ARCH}.zip $win_icestorm_url
+        wget -O $input/yosys-${ARCH}.zip $win_yosys_url
         cd $output
-        unzip -o $input/icestorm-${ARCH}.zip
+        unzip -o $input/yosys-${ARCH}.zip
 
         # Teraterm Terminal
         wget -O $input/teraterm-${ARCH}.zip $win_teraterm_url
@@ -110,9 +108,9 @@ case "${ARCH}" in
         tar xvzf $input/nextpnr-${ARCH}.tar.gz
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/icestorm-${ARCH}.tar.gz $mac_icestorm_url
+        wget -O $input/yosys-${ARCH}.tar.gz $mac_yosys_url
         cd $output
-        tar xvzf $input/icestorm-${ARCH}.tar.gz
+        tar xvzf $input/yosys-${ARCH}.tar.gz
 
         # Wishbone Tool
         wget -O $input/wishbone-tool-${ARCH}.tar.gz $mac_wishbone_tool_url
@@ -143,9 +141,9 @@ case "${ARCH}" in
         tar xvzf $input/nextpnr-${ARCH}.tar.gz
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/icestorm-${ARCH}.tar.gz $linux_icestorm_url
+        wget -O $input/yosys-${ARCH}.tar.gz $linux_yosys_url
         cd $output
-        tar xvzf $input/icestorm-${ARCH}.tar.gz
+        tar xvzf $input/yosys-${ARCH}.tar.gz
 
         # Wishbone Tool
         wget -O $input/wishbone-tool-${ARCH}.tar.gz $linux_wishbone_tool_url
@@ -174,5 +172,7 @@ case "${ARCH}" in
         exit 1
         ;;
 esac
+
+echo "${TRAVIS_TAG}" > $output/VERSION
 
 exit 0

@@ -97,7 +97,7 @@ case "${ARCH}" in
         unzip -o $input/make-${ARCH}.zip
 
         cd $base/output
-        zip -r $output_name.zip $output_name
+        zip -r -X $output_name.zip $output_name
         checksum_output .zip
         ;;
 
@@ -130,7 +130,7 @@ case "${ARCH}" in
         rm -rf re
 
         cd $base/output
-        zip -r $output_name.zip $output_name
+        zip -r -X $output_name.zip $output_name
         checksum_output .zip
         ;;
 

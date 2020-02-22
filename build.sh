@@ -6,7 +6,7 @@ win_yosys_url="https://github.com/xobs/toolchain-icestorm/releases/download/v1.3
 win_wishbone_tool_url="https://github.com/litex-hub/wishbone-utils/releases/download/v0.6.9/wishbone-tool-v0.6.9-x86_64-pc-windows-gnu.tar.gz"
 win_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-w64-mingw32.zip"
 win_python_url="https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip"
-win_make_url="https://sourceforge.net/projects/ezwinports/files/make-4.2.1-without-guile-w32-bin.zip/download"
+win_make_url="https://sourceforge.net/projects/ezwinports/files/make-4.3-without-guile-w32-bin.zip/download"
 win_teraterm_url="https://osdn.net/frs/redir.php?m=constant&f=ttssh2%2F71232%2Fteraterm-4.103.zip"
 
 mac_nextpnr_url="https://github.com/xobs/toolchain-nextpnr-ice40/releases/download/v1.44-fomu/nextpnr-ice40-darwin-v1.44-fomu.tar.gz"

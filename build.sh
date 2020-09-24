@@ -40,7 +40,8 @@ checksum_output() {
     set +x
     hashes="sha1 sha256 sha512"
     local outfile hashfile
-    outfile=$output$1
+    cd "$(dirname $output)"
+    outfile=$(basename "$output$1")
 
     for hash in $hashes ; do
 	hashfile=$outfile.$hash

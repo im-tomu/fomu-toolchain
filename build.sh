@@ -51,29 +51,27 @@ checksum_output() {
     set -x
 }
 
+extract_zip() {
+    wget -O "$2" "$1"
+    cd $output"$3"
+    unzip -o "$2"
+}
+
 case "${ARCH}" in
     "windows")
         # Python 3.7.3 (which matches the version in nextpnr)
-        wget -O $input/python-${ARCH}.zip $win_python_url
-        cd $output/bin
-        unzip -o $input/python-${ARCH}.zip
+        extract_zip $win_python_url $input/python-${ARCH}.zip  "/bin"
         rm python37.zip # we already have this unzipped from nextpnr-ice40
         rm -f python37._pth # If this file is present, PYTHONPATH is very broken
 
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.zip $win_nextpnr_url
-        cd $output/bin
-        unzip -o $input/nextpnr-${ARCH}.zip
+        extract_zip $win_nextpnr_url $input/nextpnr-${ARCH}.zip "/bin"
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.zip $win_yosys_url
-        cd $output
-        unzip -o $input/yosys-${ARCH}.zip
+        extract_zip $win_yosys_url $input/yosys-${ARCH}.zip
 
         # Teraterm Terminal
-        wget -O $input/teraterm-${ARCH}.zip $win_teraterm_url
-        cd $output/bin
-        unzip -o $input/teraterm-${ARCH}.zip
+        extract_zip $win_teraterm_url $input/teraterm-${ARCH}.zip "/bin"
 
         # Wishbone Tool
         curl -fsSL $win_wishbone_tool_url | tar xvzf - -C $output/bin

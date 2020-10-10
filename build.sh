@@ -77,8 +77,7 @@ case "${ARCH}" in
 
         # Wishbone Tool
         wget -O $input/wishbone-tool-${ARCH}.tar.gz $win_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -105,18 +104,15 @@ case "${ARCH}" in
     "macos")
         # Nextpnr
         wget -O $input/nextpnr-${ARCH}.tar.gz $mac_nextpnr_url
-        cd $output
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz
+        tar xvzf $input/nextpnr-${ARCH}.tar.gz -C $output
 
         # Yosys, icestorm, and dfu_util
         wget -O $input/yosys-${ARCH}.tar.gz $mac_yosys_url
-        cd $output
-        tar xvzf $input/yosys-${ARCH}.tar.gz
+        tar xvzf $input/yosys-${ARCH}.tar.gz -C $output
 
         # Wishbone Tool
         wget -O $input/wishbone-tool-${ARCH}.tar.gz $mac_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -138,18 +134,15 @@ case "${ARCH}" in
     "linux_x86_64")
         # Nextpnr
         wget -O $input/nextpnr-${ARCH}.tar.gz $linux_nextpnr_url
-        cd $output
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz
+        tar xvzf $input/nextpnr-${ARCH}.tar.gz -C $output
 
         # Yosys, icestorm, and dfu_util
         wget -O $input/yosys-${ARCH}.tar.gz $linux_yosys_url
-        cd $output
-        tar xvzf $input/yosys-${ARCH}.tar.gz
+        tar xvzf $input/yosys-${ARCH}.tar.gz -C $output
 
         # Wishbone Tool
         wget -O $input/wishbone-tool-${ARCH}.tar.gz $linux_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -163,7 +156,7 @@ case "${ARCH}" in
         cd ..
         rm -rf re
 
-        cd $base/output
+        cd $base/output/
         tar cvzf $output_name.tar.gz $output_name
         checksum_output .tar.gz
         ;;

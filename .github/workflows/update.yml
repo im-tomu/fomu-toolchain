@@ -1,0 +1,49 @@
+name: 'update'
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  run:
+    strategy:
+        fail-fast: false
+        max-parallel: 3
+        matrix:
+          os: [ Linux, Windows, macOS ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - run: git config --global core.autocrlf input
+      shell: bash
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - run: ARCH=${{ matrix.os }} ./build.sh
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: fomu-toolchain-${{ matrix.os }}
+        path: |
+          output/fomu-toolchain-${{ matrix.os }}*.tar.gz
+          output/fomu-toolchain-${{ matrix.os }}*.zip
+          output/fomu-toolchain-${{ matrix.os }}*.sha1
+          output/fomu-toolchain-${{ matrix.os }}*.sha256
+          output/fomu-toolchain-${{ matrix.os }}*.sha512
+
+  release:
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/'))
+    needs: [ run ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/download-artifact@v2
+
+    - uses: eine/tip@master
+      with:
+        token: ${{ github.token }}
+        tag: nightly
+        files: ./**

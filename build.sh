@@ -20,21 +20,13 @@ linux_wishbone_tool_url="https://github.com/litex-hub/wishbone-utils/releases/do
 linux_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-centos6.tar.gz"
 
 base="$(pwd)"
-output_name="fomu-toolchain-${ARCH}-${TRAVIS_TAG}"
+output_name="fomu-toolchain-${ARCH}"
 output="${base}/output/${output_name}"
 input="${base}/input"
 
 mkdir -p $output
 mkdir -p $input
 mkdir -p $output/bin
-
-if [ -z ${TRAVIS_TAG} ]
-then
-    echo "This repository is designed to be run in the Travis CI system."
-    echo "Please download the prebuilt distribution for your platform at:"
-    echo "https://github.com/im-tomu/fomu-toolchain/releases/latest"
-    exit 1
-fi
 
 checksum_output() {
     set +x
@@ -58,7 +50,7 @@ extract_zip() {
 }
 
 case "${ARCH}" in
-    "windows")
+    "Windows")
         # Python 3.7.3 (which matches the version in nextpnr)
         extract_zip $win_python_url $input/python-${ARCH}.zip  "/bin"
         rm python37.zip # we already have this unzipped from nextpnr-ice40
@@ -98,7 +90,7 @@ case "${ARCH}" in
         checksum_output .zip
         ;;
 
-    "macos")
+    "macOS")
         # Nextpnr
         curl -fsSL $mac_nextpnr_url | tar xvzf - -C $output
 
@@ -125,7 +117,7 @@ case "${ARCH}" in
         checksum_output .zip
         ;;
 
-    "linux_x86_64")
+    "Linux")
         # Nextpnr
         curl -fsSL $linux_nextpnr_url | tar xvzf - -C $output
 
@@ -152,12 +144,12 @@ case "${ARCH}" in
         checksum_output .tar.gz
         ;;
     *)
-        echo "Unrecognized architecture: ${ARCH}"
-        echo "Supported architectures: macos, windows, linux_x86_64"
+        echo "Unrecognized platform: ${ARCH}"
+        echo "Supported platforms: MacOS, Windows, Linux"
         exit 1
         ;;
 esac
 
-echo "${TRAVIS_TAG}" > $output/VERSION
+echo "${GITHUB_SHA}" > $output/VERSION
 
 exit 0

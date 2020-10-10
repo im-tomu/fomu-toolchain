@@ -76,8 +76,7 @@ case "${ARCH}" in
         unzip -o $input/teraterm-${ARCH}.zip
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $win_wishbone_tool_url
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
+        curl -fsSL $win_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -103,16 +102,13 @@ case "${ARCH}" in
 
     "macos")
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.tar.gz $mac_nextpnr_url
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz -C $output
+        curl -fsSL $mac_nextpnr_url | tar xvzf - -C $output
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.tar.gz $mac_yosys_url
-        tar xvzf $input/yosys-${ARCH}.tar.gz -C $output
+        curl -fsSL $mac_yosys_url | tar xvzf - -C $output
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $mac_wishbone_tool_url
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
+        curl -fsSL $mac_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -133,16 +129,13 @@ case "${ARCH}" in
 
     "linux_x86_64")
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.tar.gz $linux_nextpnr_url
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz -C $output
+        curl -fsSL $linux_nextpnr_url | tar xvzf - -C $output
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.tar.gz $linux_yosys_url
-        tar xvzf $input/yosys-${ARCH}.tar.gz -C $output
+        curl -fsSL $linux_yosys_url | tar xvzf - -C $output
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $linux_wishbone_tool_url
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz -C $output/bin
+        curl -fsSL $linux_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.

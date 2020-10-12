@@ -18,14 +18,15 @@ Prebuilt packages contain _almost_ everything you'll need for developing softwar
 
 * [open-tool-forge/fpga-toolchain](https://github.com/open-tool-forge/fpga-toolchain):
   * **yosys** -- synthesis
-  * **ghdl-yosys-plugin** -- VHDL frontend for Yosys
+  * **ghdl-yosys-plugin** -- VHDL frontend for *Yosys*
   * **nextpnr** -- place-and-route
   * **dfu-util** -- upload bitstream to the FPGA
-  * **python3** -- required for `nextpnr-ice40` and for building litex projects
   * Find the list of all tools at [open-tool-forge/fpga-toolchain: Introduction](https://github.com/open-tool-forge/fpga-toolchain#introduction).
 * Extras, specific for Fomu:
   * **riscv-gcc** -- compile code for RISC-V CPUs, such as the Fomu softcore
   * **wishbone-tool** -- access the debug bus on Fomu
   * The Windows version includes `make` and `teraterm`.
+
+NOTE: *fpga-toolchain* includes an internal *lib/python3.8* interpreter to be used by *nextpnr*. However, users should install a Python interpreter on their system for using *LiteX* or other Python based hardware description/design tools.
 
 It is strongly recommended that you install `git` for managing repositories and checking out code, though it is not strictly necessary.

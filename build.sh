@@ -20,21 +20,13 @@ linux_wishbone_tool_url="https://github.com/litex-hub/wishbone-utils/releases/do
 linux_riscv_url="https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-centos6.tar.gz"
 
 base="$(pwd)"
-output_name="fomu-toolchain-${ARCH}-${TRAVIS_TAG}"
+output_name="fomu-toolchain-${ARCH}"
 output="${base}/output/${output_name}"
 input="${base}/input"
 
 mkdir -p $output
 mkdir -p $input
 mkdir -p $output/bin
-
-if [ -z ${TRAVIS_TAG} ]
-then
-    echo "This repository is designed to be run in the Travis CI system."
-    echo "Please download the prebuilt distribution for your platform at:"
-    echo "https://github.com/im-tomu/fomu-toolchain/releases/latest"
-    exit 1
-fi
 
 checksum_output() {
     set +x
@@ -51,34 +43,30 @@ checksum_output() {
     set -x
 }
 
+extract_zip() {
+    wget -O "$2" "$1"
+    cd $output"$3"
+    unzip -o "$2"
+}
+
 case "${ARCH}" in
-    "windows")
+    "Windows")
         # Python 3.7.3 (which matches the version in nextpnr)
-        wget -O $input/python-${ARCH}.zip $win_python_url
-        cd $output/bin
-        unzip -o $input/python-${ARCH}.zip
+        extract_zip $win_python_url $input/python-${ARCH}.zip  "/bin"
         rm python37.zip # we already have this unzipped from nextpnr-ice40
         rm -f python37._pth # If this file is present, PYTHONPATH is very broken
 
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.zip $win_nextpnr_url
-        cd $output/bin
-        unzip -o $input/nextpnr-${ARCH}.zip
+        extract_zip $win_nextpnr_url $input/nextpnr-${ARCH}.zip "/bin"
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.zip $win_yosys_url
-        cd $output
-        unzip -o $input/yosys-${ARCH}.zip
+        extract_zip $win_yosys_url $input/yosys-${ARCH}.zip
 
         # Teraterm Terminal
-        wget -O $input/teraterm-${ARCH}.zip $win_teraterm_url
-        cd $output/bin
-        unzip -o $input/teraterm-${ARCH}.zip
+        extract_zip $win_teraterm_url $input/teraterm-${ARCH}.zip "/bin"
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $win_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        curl -fsSL $win_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -102,21 +90,15 @@ case "${ARCH}" in
         checksum_output .zip
         ;;
 
-    "macos")
+    "macOS")
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.tar.gz $mac_nextpnr_url
-        cd $output
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz
+        curl -fsSL $mac_nextpnr_url | tar xvzf - -C $output
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.tar.gz $mac_yosys_url
-        cd $output
-        tar xvzf $input/yosys-${ARCH}.tar.gz
+        curl -fsSL $mac_yosys_url | tar xvzf - -C $output
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $mac_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        curl -fsSL $mac_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -135,21 +117,15 @@ case "${ARCH}" in
         checksum_output .zip
         ;;
 
-    "linux_x86_64")
+    "Linux")
         # Nextpnr
-        wget -O $input/nextpnr-${ARCH}.tar.gz $linux_nextpnr_url
-        cd $output
-        tar xvzf $input/nextpnr-${ARCH}.tar.gz
+        curl -fsSL $linux_nextpnr_url | tar xvzf - -C $output
 
         # Yosys, icestorm, and dfu_util
-        wget -O $input/yosys-${ARCH}.tar.gz $linux_yosys_url
-        cd $output
-        tar xvzf $input/yosys-${ARCH}.tar.gz
+        curl -fsSL $linux_yosys_url | tar xvzf - -C $output
 
         # Wishbone Tool
-        wget -O $input/wishbone-tool-${ARCH}.tar.gz $linux_wishbone_tool_url
-        cd $output/bin
-        tar xvzf $input/wishbone-tool-${ARCH}.tar.gz
+        curl -fsSL $linux_wishbone_tool_url | tar xvzf - -C $output/bin
 
         # Riscv Toolchain
         # Note that we want to strip the front part of the path.
@@ -163,17 +139,17 @@ case "${ARCH}" in
         cd ..
         rm -rf re
 
-        cd $base/output
+        cd $base/output/
         tar cvzf $output_name.tar.gz $output_name
         checksum_output .tar.gz
         ;;
     *)
-        echo "Unrecognized architecture: ${ARCH}"
-        echo "Supported architectures: macos, windows, linux_x86_64"
+        echo "Unrecognized platform: ${ARCH}"
+        echo "Supported platforms: MacOS, Windows, Linux"
         exit 1
         ;;
 esac
 
-echo "${TRAVIS_TAG}" > $output/VERSION
+echo "${GITHUB_SHA}" > $output/VERSION
 
 exit 0

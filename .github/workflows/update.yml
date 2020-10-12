@@ -1,0 +1,114 @@
+name: 'update'
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  run:
+    strategy:
+        fail-fast: false
+        max-parallel: 3
+        matrix:
+          os: [ Linux, Windows, macOS ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - run: git config --global core.autocrlf input
+      shell: bash
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - run: ARCH=${{ matrix.os }} ./build.sh
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: fomu-toolchain-${{ matrix.os }}
+        path: |
+          output/fomu-toolchain-${{ matrix.os }}*.tar.gz
+          output/fomu-toolchain-${{ matrix.os }}*.zip
+          output/fomu-toolchain-${{ matrix.os }}*.sha1
+          output/fomu-toolchain-${{ matrix.os }}*.sha256
+          output/fomu-toolchain-${{ matrix.os }}*.sha512
+
+
+  test:
+    needs: [ run ]
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        os: [ ubuntu, windows, macos ]
+    runs-on: ${{ matrix.os }}-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+    - run: git config --global core.autocrlf input
+      shell: bash
+
+    - uses: actions/checkout@v2
+      with:
+        repository: im-tomu/fomu-workshop
+        submodules: true
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Set FOMU_TOOLCHAIN envvar
+      run: |
+        case '${{ matrix.os }}' in
+          ubuntu)  ARCH=Linux;;
+          windows) ARCH=Windows;;
+          macos)   ARCH=macOS;;
+        esac
+        echo "FOMU_TOOLCHAIN=fomu-toolchain-$ARCH" >> $GITHUB_ENV
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.FOMU_TOOLCHAIN }}
+
+    - name: Install (Ubuntu)
+      if: matrix.os == 'ubuntu'
+      run: |
+        tar xzf ${{ env.FOMU_TOOLCHAIN }}.tar.gz
+        curl -L https://ziglang.org/download/0.6.0/zig-linux-x86_64-0.6.0.tar.xz | tar -xJf -
+        echo "$(pwd)/zig-linux-x86_64-0.6.0" >> $GITHUB_PATH
+
+    - name: Install (Windows)
+      if: matrix.os == 'windows'
+      run: |
+        unzip ${{ env.FOMU_TOOLCHAIN }}.zip
+        choco install zig --version 0.6.0
+        ln -s $(which python) /usr/bin/python3
+
+    - name: Install (Mac OS)
+      if: matrix.os == 'macos'
+      run: |
+        unzip ${{ env.FOMU_TOOLCHAIN }}.zip
+        brew install zig
+
+    - run: |
+        echo "$(pwd)/${{ env.FOMU_TOOLCHAIN }}/bin" >> $GITHUB_PATH
+        ./.github/tests.sh
+
+
+  release:
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/'))
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/download-artifact@v2
+
+    - uses: eine/tip@master
+      with:
+        token: ${{ github.token }}
+        tag: nightly
+        files: ./**

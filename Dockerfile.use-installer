@@ -1,0 +1,42 @@
+ARG IMAGE="python:3-slim-buster"
+
+#---
+# Place anything that is common to both the build and execution environment in base 
+#
+FROM $IMAGE AS base
+
+RUN apt-get update -qq \
+ && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+    ca-certificates \
+    git \
+    make \
+    wget \
+ && apt-get autoclean && apt-get clean && apt-get -y autoremove \
+ && update-ca-certificates \
+ && rm -rf /var/lib/apt/lists
+
+RUN wget https://github.com/im-tomu/fomu-toolchain/releases/download/v1.5.6/fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
+    tar -xvf fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
+    rm fomu-toolchain-linux_x86_64-v1.5.6.tar.gz
+
+ENV PATH=/fomu-toolchain-linux_x86_64-v1.5.6/bin:$PATH
+
+FROM base as release-candidate
+
+RUN adduser --disabled-password fomu
+USER fomu
+WORKDIR /home/fomu
+
+# Commented section to show where we would run tests in an image layer identical to the release candidate
+# without polluting the release candidate with test results.  Uncomment the following and add tests:
+# FROM release-candidate as test-release-candidate
+# Ideally we would run some tests here 
+
+FROM release-candidate as fomu-toolchain
+
+# Below are some sample commands to build and run a docker images.
+# 
+# docker build -f Dockerfile.use-installer . -t fomu-toolchain
+#
+# docker run -it -v $(pwd):/home/fomu fomu-toolchain bash
+

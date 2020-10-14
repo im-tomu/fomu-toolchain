@@ -25,11 +25,12 @@ RUN apt-get update -qq \
 # Run regression tests on binaries built from source here
 
 # FROM builder as installer
-# create an installer from the binaries built from source here
+# use COPY --from=builder to get the binaries from builder stage and
+# create an installer from those binaries built from source here
 
 FROM base as release-candidate
-# use --copy-from builder to copy binaries into the right place here if built from source, 
-# or copy the installer with --copy-from installer 
+# use COPY --from=builder to copy binaries into the right place here if built from source, 
+# or copy the installer with COPY --from=installer 
 # or use the pre-built released installer as we do here:
 RUN wget https://github.com/im-tomu/fomu-toolchain/releases/download/v1.5.6/fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
     tar -xvf fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
@@ -54,8 +55,12 @@ WORKDIR /home/${USER}
 FROM release-candidate as fomu-toolchain
 
 # Below are some sample commands to build and run a docker images.
+# Execute the docker build commands from within the dockerfiles folder.
 # 
 # docker build -f Dockerfile.use-installer . -t fomu-toolchain
+#
+# Execute the docker run commands from the fomu-workshop folder
+# or from your own project's folder as appropriate.
 #
 # docker run -it -v $(pwd):/home/fomu fomu-toolchain bash
 #

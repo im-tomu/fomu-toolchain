@@ -16,26 +16,40 @@ RUN apt-get update -qq \
  && update-ca-certificates \
  && rm -rf /var/lib/apt/lists
 
+# FROM base as builder 
+# Install necessary tools and source code and build from source here for ci/cd
+# If any build or test return a non-zero exit code, the docker build stops
+# with an error, which is nice for ci/cd like github actions.
+
+# FROM builder as test-builder
+# Run regression tests on binaries built from source here
+
+# FROM builder as installer
+# create an installer from the binaries built from source here
+
+FROM base as release-candidate
+# use --copy-from builder to copy binaries into the right place here if built from source, 
+# or copy the installer with --copy-from installer 
+# or use the pre-built released installer as we do here:
 RUN wget https://github.com/im-tomu/fomu-toolchain/releases/download/v1.5.6/fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
     tar -xvf fomu-toolchain-linux_x86_64-v1.5.6.tar.gz && \
     rm fomu-toolchain-linux_x86_64-v1.5.6.tar.gz
-
+ 
 ENV PATH=/fomu-toolchain-linux_x86_64-v1.5.6/bin:$PATH
-
-FROM base as release-candidate
 
 ENV USER=fomu
 RUN adduser --disabled-password ${USER}
-
+# RUN groupadd plugdev # error - already exists
 RUN usermod -a -G plugdev ${USER}
-# COPY 99-fomu.rules /etc/udev/rules.d/99-fomu.rules
+COPY 99-fomu.rules /etc/udev/rules.d/99-fomu.rules
+# RUN udevadm control --reload-rules
+# RUN udevadm trigger
 USER ${USER}
 WORKDIR /home/${USER}
 
-# Commented section to show where we would run tests in an image layer identical to the release candidate
-# without polluting the release candidate with test results.  Uncomment the following and add tests:
 # FROM release-candidate as test-release-candidate
-# Ideally we would run some tests here 
+# Run any tests on final image here 
+
 
 FROM release-candidate as fomu-toolchain
 
@@ -47,5 +61,11 @@ FROM release-candidate as fomu-toolchain
 #
 # The --privileged param may be used to allow access to usb devices
 # but it allows access to much more, and may be a security risk.
-# There may be a better way to allow dfu-util to run 
+# There may be a better way to allow dfu-util and wishbone-tool to run 
 # docker run -it -v $(pwd):/home/fomu --privileged fomu-toolchain bash
+# 
+# On my old laptop running ubuntu 20.04, I need to re-run the docker 
+# container after using dfu-util in order to use it again or to use
+# wishbone-tool.  Perhaps I am missing a dependency here?  I installed
+# udev and dfu-util above just to see if that would pull in something
+# I missed, but I don't think it helped.  I removed them again.

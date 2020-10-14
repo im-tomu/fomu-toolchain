@@ -9,6 +9,7 @@ RUN apt-get update -qq \
  && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
     ca-certificates \
     git \
+    libusb-1.0-0 \
     make \
     wget \
  && apt-get autoclean && apt-get clean && apt-get -y autoremove \
@@ -23,9 +24,13 @@ ENV PATH=/fomu-toolchain-linux_x86_64-v1.5.6/bin:$PATH
 
 FROM base as release-candidate
 
-RUN adduser --disabled-password fomu
-USER fomu
-WORKDIR /home/fomu
+ENV USER=fomu
+RUN adduser --disabled-password ${USER}
+
+RUN usermod -a -G plugdev ${USER}
+# COPY 99-fomu.rules /etc/udev/rules.d/99-fomu.rules
+USER ${USER}
+WORKDIR /home/${USER}
 
 # Commented section to show where we would run tests in an image layer identical to the release candidate
 # without polluting the release candidate with test results.  Uncomment the following and add tests:
@@ -39,4 +44,8 @@ FROM release-candidate as fomu-toolchain
 # docker build -f Dockerfile.use-installer . -t fomu-toolchain
 #
 # docker run -it -v $(pwd):/home/fomu fomu-toolchain bash
-
+#
+# The --privileged param may be used to allow access to usb devices
+# but it allows access to much more, and may be a security risk.
+# There may be a better way to allow dfu-util to run 
+# docker run -it -v $(pwd):/home/fomu --privileged fomu-toolchain bash

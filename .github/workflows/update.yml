@@ -97,6 +97,12 @@ jobs:
         unzip ${{ env.FOMU_TOOLCHAIN }}.zip
         brew install zig
 
+    - name: Install Scala (Mac OS)
+      if: matrix.os == 'macos'
+      uses: olafurpg/setup-scala@v10
+      with:
+        java-version: openjdk@1.11
+
     - run: |
         echo "$(pwd)/${{ env.FOMU_TOOLCHAIN }}/bin" >> $GITHUB_PATH
         ./.github/tests.sh

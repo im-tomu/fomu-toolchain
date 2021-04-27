@@ -16,9 +16,9 @@ ENV PATH=/opt/fomu-toolchain-Linux/bin:$PATH
 ENV USER=fomu
 RUN adduser --disabled-password ${USER}
 
-RUN usermod -a -G plugdev ${USER} \
- && mkdir -p /etc/udev/rules.d/ \
- && echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5bf0", MODE="0664", GROUP="plugdev"' > /etc/udev/rules.d/99-fomu.rules
+RUN usermod -a -G plugdev ${USER}
+
+COPY 99-fomu.rules /etc/udev/rules.d/
 
 USER ${USER}
 WORKDIR /home/${USER}

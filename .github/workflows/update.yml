@@ -117,7 +117,7 @@ jobs:
 
     - uses: actions/download-artifact@v2
 
-    - uses: eine/tip@master
+    - uses: pyTooling/Actions/releaser@r0
       with:
         token: ${{ github.token }}
         tag: nightly
